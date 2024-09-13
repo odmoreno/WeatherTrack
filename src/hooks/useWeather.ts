@@ -1,6 +1,20 @@
 import axios from 'axios'
 import { SearchType, Weather } from '../types'
 
+
+//Type GUARD o ASSERTION
+function isWeatherResponse(weather: unknown): weather is Weather {
+
+  return (
+    Boolean(weather) &&
+    typeof weather === 'object' &&
+    typeof (weather as Weather).name === 'string' &&
+    typeof (weather as Weather).main.temp === 'number' &&
+    typeof (weather as Weather).main.temp_max === 'number' &&
+    typeof (weather as Weather).main.temp_min === 'number'
+  )
+}
+
 export default function useWeather() {
 
   const fetchWeather = async (search: SearchType) => {
@@ -12,11 +26,21 @@ export default function useWeather() {
       const lat = data[0].lat
       const lon = data[0].lon
 
-      //castear el type
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${appid}`
-      const { data: weatherResult } = await axios<Weather>(weatherUrl)
-      console.log(weatherResult.main.temp)
-      console.log(weatherResult.main.temp_max)
+
+      //castear el type
+      //const { data: weatherResult } = await axios<Weather>(weatherUrl)
+      //console.log(weatherResult.main.temp)
+      //console.log(weatherResult.main.temp_max)
+
+      //type guard
+      const { data: weatherResult } = await axios(weatherUrl)
+      const result = isWeatherResponse(weatherResult)
+
+      if (result) {
+        console.log(
+          weatherResult.main)
+      }
 
     } catch (error) {
       console.log(error)
