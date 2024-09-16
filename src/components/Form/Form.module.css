@@ -16,9 +16,12 @@ form select {
     border-radius: 1rem;
 }
 
+form option {
+    background-color: transparent;
+    color: var(--primary);
+}
 .field ::placeholder {
     color: var(--white);
-
 }
 
 .submit {
